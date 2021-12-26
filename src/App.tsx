@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { useEffect, useState } from 'react';
 import './App.css'
 import Buttons from './components/Buttons/Button';
+import InputForm from './components/inputForm/InputForm';
 import Pagination from './components/Pagination/Pagination';
 import Search from './components/Search/Search';
 import Table, { IUser } from './components/Table/Table';
@@ -37,7 +38,6 @@ function App() {
   }
 
   const filteredData = getFilteredData()
-  console.log(filteredData)
   const totalPages = Math.ceil(filteredData.length / limitRows)
   const Pages: number[] = []
   for (let i = 1; i <= totalPages; i++) {
@@ -78,9 +78,14 @@ function App() {
     setSearchText(str)
   }
 
+  const sendUserData = (user:IUser) => {
+    setCurrentUsers([user,...currentUsers])
+  }
+
   return (
     <div className="container" >
       <Buttons loadData={loadData} />
+      <InputForm sendUserData={sendUserData}/>
       <Search onSearch={onSearch} />
       <Pagination Pages={Pages} paginate={paginate} onNext={onNext} onPrev={onPrev} disabled={disabled} />
       {users && <Table isLoading={isLoading} users={currentUsers} setUsers={setCurrentUsers} />}

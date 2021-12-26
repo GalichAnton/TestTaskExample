@@ -1,0 +1,30 @@
+.sortBtn{
+  background: transparent;
+  border: none;
+  transform: rotate(90deg);
+  font-size: 20px;
+  transition: all 0.5s ease 0s;
+}
+.sortBtn_up{
+  transform: rotate(-90deg);
+}
+
+.focused{
+  border: 2px solid var(--green-light);
+}
+.userDetailed{
+  padding: 20px;
+  width: 100%;
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+}
+.userInfo{
+  color:green;
+  font-size: 22px; 
+}
+.desc{
+  padding: 20px;
+  font-weight: 700;
+  font-size: 20px;
+}

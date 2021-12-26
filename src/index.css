@@ -1,0 +1,21 @@
+*{
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+:root {
+  --black: #3B434E;
+  --white: white;
+  --primary: #7653FC;
+  --primary-hover:#23116b;
+  --red: #FC836D;
+  --green: #1DC37E;
+  --green-light: #C8F8E4;
+  --gray-light:#7a7777;
+}

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import './App.css'
 import Buttons from './components/Buttons/Button';
 import Pagination from './components/Pagination/Pagination';
+import Search from './components/Search/Search';
 import Table, { IUser } from './components/Table/Table';
 import { useServerData } from './hooks/useServerData';
 
@@ -14,55 +15,74 @@ function App() {
   const [disabled, setDisabled] = useState(false)
   const [currentUsers, setCurrentUsers] = useState<IUser[]>([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [searchText, setSearchText] = useState('')
   const loadData = (str: string) => {
     setChoiseData(str)
     setCurrentPage(1)
   }
 
-  const totalPages = Math.ceil(users.length/limitRows)
+  const lastUserIndex = currentPage * limitRows
+  const firstUserIndex = lastUserIndex - limitRows
+
+  const getFilteredData = () => {
+    if (searchText === '') {
+      return users
+    }
+    return users.filter(item => {
+      return (item.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchText.toLowerCase()) 
+      )
+    })
+  }
+
+  const filteredData = getFilteredData()
+  console.log(filteredData)
+  const totalPages = Math.ceil(filteredData.length / limitRows)
   const Pages: number[] = []
   for (let i = 1; i <= totalPages; i++) {
     Pages.push(i)
   }
 
-  const lastUserIndex = currentPage * limitRows
-  const firstUserIndex = lastUserIndex - limitRows
-  
-  useEffect(()=>{
-    setCurrentUsers(users.slice(firstUserIndex,lastUserIndex))
-    console.log(currentUsers)
-  },[users])
+  useEffect(() => {
+    setCurrentUsers(filteredData.slice(firstUserIndex, lastUserIndex))
+  }, [users,searchText])
 
-  
 
-  const paginate = (page:number) => {
+
+  const paginate = (page: number) => {
     setCurrentPage(page)
-    setCurrentUsers(users.slice(firstUserIndex,lastUserIndex))
+    setCurrentUsers(filteredData.slice(firstUserIndex, lastUserIndex))
     setDisabled(false)
   }
 
   const onNext = () => {
-    if(currentPage < totalPages){
+    if (currentPage < totalPages) {
       setDisabled(false)
-      setCurrentPage(prev=> prev + 1)
+      setCurrentPage(prev => prev + 1)
       return
     }
     setDisabled(true)
   }
 
-  const onPrev= () => {
-    if(currentPage > 2){
+  const onPrev = () => {
+    if (currentPage > 2) {
       setDisabled(false)
-      setCurrentPage(prev=> prev - 1)
+      setCurrentPage(prev => prev - 1)
       return
     }
     setDisabled(true)
+  }
+
+  const onSearch = (str: string) => {
+    setSearchText(str)
   }
 
   return (
     <div className="container" >
       <Buttons loadData={loadData} />
-      <Pagination Pages={Pages} paginate={paginate} onNext={onNext} onPrev={onPrev} disabled={disabled}/>
+      <Search onSearch={onSearch} />
+      <Pagination Pages={Pages} paginate={paginate} onNext={onNext} onPrev={onPrev} disabled={disabled} />
       {users && <Table isLoading={isLoading} users={currentUsers} setUsers={setCurrentUsers} />}
     </div>
   );

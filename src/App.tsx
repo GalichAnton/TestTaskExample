@@ -12,6 +12,7 @@ function App() {
   const limitRows = 50
   const [users, isLoading, setUsers, setChoiseData] = useServerData()
   const [disabled, setDisabled] = useState(false)
+  const [currentUsers, setCurrentUsers] = useState<IUser[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const loadData = (str: string) => {
     setChoiseData(str)
@@ -23,13 +24,20 @@ function App() {
   for (let i = 1; i <= totalPages; i++) {
     Pages.push(i)
   }
-  
+
   const lastUserIndex = currentPage * limitRows
   const firstUserIndex = lastUserIndex - limitRows
-  const currentUsers = users.slice(firstUserIndex,lastUserIndex) 
+  
+  useEffect(()=>{
+    setCurrentUsers(users.slice(firstUserIndex,lastUserIndex))
+    console.log(currentUsers)
+  },[users])
+
+  
 
   const paginate = (page:number) => {
     setCurrentPage(page)
+    setCurrentUsers(users.slice(firstUserIndex,lastUserIndex))
     setDisabled(false)
   }
 
@@ -55,7 +63,7 @@ function App() {
     <div className="container" >
       <Buttons loadData={loadData} />
       <Pagination Pages={Pages} paginate={paginate} onNext={onNext} onPrev={onPrev} disabled={disabled}/>
-      {users && <Table isLoading={isLoading} users={currentUsers} setUsers={setUsers} />}
+      {users && <Table isLoading={isLoading} users={currentUsers} setUsers={setCurrentUsers} />}
     </div>
   );
 }
